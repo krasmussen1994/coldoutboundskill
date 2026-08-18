@@ -1,0 +1,20 @@
+{
+  "name": "cold-outbound-skills",
+  "description": "50 Claude Code skills for cold email: ICP definition, list building, domain/inbox infrastructure, copywriting, sending, deliverability, and 19 buying-signal playbooks.",
+  "version": "1.0.0",
+  "author": {
+    "name": "GrowthEngineX"
+  },
+  "homepage": "https://github.com/krasmussen1994/coldoutboundskill",
+  "repository": "https://github.com/krasmussen1994/coldoutboundskill",
+  "license": "MIT",
+  "keywords": [
+    "cold-email",
+    "outbound",
+    "lead-generation",
+    "deliverability",
+    "smartlead",
+    "prospeo",
+    "clay"
+  ]
+}

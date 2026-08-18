@@ -1,0 +1,16 @@
+{
+  "name": "coldoutboundskill",
+  "owner": {
+    "name": "krasmussen1994"
+  },
+  "metadata": {
+    "description": "Cold outbound skills for Claude Code."
+  },
+  "plugins": [
+    {
+      "name": "cold-outbound-skills",
+      "source": "./",
+      "description": "50 Claude Code skills for cold email: ICP definition, list building, domain/inbox infrastructure, copywriting, sending, deliverability, and 19 buying-signal playbooks."
+    }
+  ]
+}
