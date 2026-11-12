@@ -43,7 +43,7 @@ ArtifactData `set` on `https://claude.ai/artifact/X4BAkr62irNyypZ3nYcHkJ`, colle
  "plays": [{"label": "...", "who": "...", "rate": 105, "people": 3560, "positives": 34, "subject": "...", "body": "..."}]}
 ```
 
-- `sen`: any | own | c | vp | dir. `size`: any | s1 (1-10) | s2 (11-50) | s3 (51-200) | s4 (201-1,000) | s5 (1,001-5,000) | s6 (5,001-10,000) | s7 (10,000+). `ind`: any | sw | ret | hc | con | ps | mfg | fin | hosp | ag | edu.
+- `sen`, `size` and `ind` each take one key or an array of keys (several = an equal mix, e.g. `"sen": ["vp","c"]`). `sen`: any | own | c | vp | dir. `size`: any | s1 (1-10) | s2 (11-50) | s3 (51-200) | s4 (201-1,000) | s5 (1,001-5,000) | s6 (5,001-10,000) | s7 (10,000+). `ind`: any | sw | ret | hc | con | ps | mfg | fin | hosp | ag | edu.
 - `client` is optional: a `d` description from plays.json to use as the IntentSignal benchmark instead of the persona median. Use it when one play is clearly closer than the persona average.
 - Goal, accounts, buyers per account, close rate and deal size are starting guesses: base them on the company's size, price point and market, and say in the email that they are guesses.
 
