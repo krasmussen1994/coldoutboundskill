@@ -37,7 +37,7 @@ ArtifactData `set` on `https://claude.ai/artifact/X4BAkr62irNyypZ3nYcHkJ`, colle
 
 ```json
 {"name": "Backd", "persona": "own", "sen": "own", "size": "s2", "ind": "any",
- "client": "Creative agency", "goal": 20, "tam": 50000, "cpc": 1, "win": 15, "deal": 6000,
+ "client": "Creative agency", "tam": 50000, "cpc": 1, "win": 15, "deal": 6000,
  "call": "<event start ISO>", "contact": "<name, title>",
  "note": "<one sentence on why these plays>",
  "plays": [{"label": "...", "who": "...", "rate": 105, "people": 3560, "positives": 34, "subject": "...", "body": "..."}]}
@@ -45,7 +45,7 @@ ArtifactData `set` on `https://claude.ai/artifact/X4BAkr62irNyypZ3nYcHkJ`, colle
 
 - `sen`, `size` and `ind` each take one key or an array of keys (several = an equal mix, e.g. `"sen": ["vp","c"]`). `sen`: any | own | c | vp | dir. `size`: any | s1 (1-10) | s2 (11-50) | s3 (51-200) | s4 (201-1,000) | s5 (1,001-5,000) | s6 (5,001-10,000) | s7 (10,000+). `ind`: any | sw | ret | hc | con | ps | mfg | fin | hosp | ag | edu.
 - `client` is optional: a `d` description from plays.json to use as the IntentSignal benchmark instead of the persona median. Use it when one play is clearly closer than the persona average.
-- Goal, accounts, buyers per account, close rate and deal size are starting guesses: base them on the company's size, price point and market, and say in the email that they are guesses.
+- `tam` = companies in their ICP, `cpc` = decision makers per company, `win` = meeting-to-deal %, `deal` = first-year deal value. These are starting guesses: base them on the company's size, price point and market, and say in the email that they are guesses. There is no meeting goal: the page works out the meeting ceiling from the market.
 
 ## 5. Email Kyle
 
@@ -53,7 +53,7 @@ Gmail `send_message` to kyle@intentsignal.co only. Subject `Call prep: <Company>
 
 1. Two lines on the company and the person.
 2. The prefilled link `https://claude.ai/artifact/X4BAkr62irNyypZ3nYcHkJ#<slug>` and the settings it loads.
-3. What the calculator shows: industry vs IntentSignal people per positive reply, meetings the market supports, the recommended plan, and the weakest assumption.
+3. What the calculator shows: industry vs IntentSignal people per positive reply, the meeting ceiling (industry average vs our approach), the test package and the package that reaches the ceiling, and the weakest assumption.
 4. The two plays: buyer, people per positive reply (people emailed, positives), and the real email in a blockquote.
 5. Four questions to confirm on the call.
 
