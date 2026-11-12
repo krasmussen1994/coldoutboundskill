@@ -19,6 +19,14 @@ Google Calendar, today and tomorrow before noon (America/Chicago). A new-busines
 - The calendar description and any Calendly / Gmail thread for their title and what they asked about.
 - Decide who THEY sell to (their buyer, not them): department, seniority, company size, industry. That is what the calculator models.
 
+## 2b. Find the thread that booked the call
+
+```bash
+python3 -I scripts/find_plays.py thread --email <attendee email>
+```
+
+Put it in the preset as `booked` (first email, any bump, their reply; trim signatures) and lead the email with it. Name the campaign's reply rate from `rank` output for the INTENTSIGNAL workspace. If nothing is found, the call came from another channel: say so.
+
 ## 3. Pick the closest plays
 
 ```bash
@@ -40,6 +48,9 @@ ArtifactData `set` on `https://claude.ai/artifact/X4BAkr62irNyypZ3nYcHkJ`, colle
  "client": "Creative agency", "tam": 50000, "cpc": 1, "win": 15, "deal": 6000,
  "call": "<event start ISO>", "contact": "<name, title>",
  "note": "<one sentence on why these plays>",
+ "booked": {"title": "<subject>: the thread that booked this call", "note": "<campaign and its reply rate>",
+            "messages": [{"who": "Kyle (IntentSignal)", "side": "us", "date": "2026-10-19", "subject": "...", "body": "..."},
+                         {"who": "<Name> (<Company>)", "side": "them", "date": "...", "body": "..."}]},
  "plays": [{"label": "...", "who": "...", "rate": 105, "people": 3560, "positives": 34, "subject": "...", "body": "..."}]}
 ```
 
@@ -51,7 +62,7 @@ ArtifactData `set` on `https://claude.ai/artifact/X4BAkr62irNyypZ3nYcHkJ`, colle
 
 Gmail `send_message` to kyle@intentsignal.co only. Subject `Call prep: <Company> (<Name>, <Title>) <time> <day>`. Short HTML:
 
-1. Two lines on the company and the person.
+1. Two lines on the company and the person, then **How this call got booked**: the thread (first email, bump, their reply) and what made them say yes.
 2. The prefilled link `https://claude.ai/artifact/X4BAkr62irNyypZ3nYcHkJ#<slug>` and the settings it loads.
 3. What the calculator shows: industry vs IntentSignal people per positive reply, the meeting ceiling (industry average vs our approach), the test package and the package that reaches the ceiling, and the weakest assumption.
 4. The two plays: buyer, people per positive reply (people emailed, positives), and the real email in a blockquote.

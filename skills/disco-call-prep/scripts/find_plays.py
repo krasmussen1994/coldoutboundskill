@@ -7,6 +7,7 @@ Prints JSON. Never prints lead names or email addresses except inside the exampl
 
   python3 find_plays.py rank --persona own --persona hr [--min-people 3000] [--min-pos 15] [--top 6]
   python3 find_plays.py example --ws BRIDGEWOOD_CREATIVE --tool emailbison --campaign 113
+  python3 find_plays.py thread --email prospect@company.com
 """
 import argparse, html, json, os, re, subprocess, sys
 
@@ -133,6 +134,35 @@ def example(a):
     print(json.dumps({"subject": clean(subj or ""), "body": clean(body or ""), "is_template": templated}, indent=1))
 
 
+def thread(a):
+    """The outbound thread that booked the call: searches IntentSignal's own workspaces first."""
+    order = ["INTENTSIGNAL"] + [w for w in keys("_INSTANTLY_API_KEY") if w != "INTENTSIGNAL"]
+    ik = keys("_INSTANTLY_API_KEY")
+    for ws in order:
+        key = ik.get(ws)
+        if not key:
+            continue
+        d = curl(INST + "leads/list", key, {"search": a.email, "limit": 5})
+        if not d.get("items"):
+            continue
+        em = curl(INST + f"emails?lead={a.email}&limit=30", key).get("items", [])
+        em.sort(key=lambda x: x.get("timestamp_email") or "")
+        msgs = []
+        for x in em:
+            if (x.get("subject") or "").startswith("Invitation:"):
+                continue
+            b = x.get("body") or {}
+            t = b.get("text") or clean(b.get("html") or "")
+            t = re.split(r"\nOn .{5,120}wrote:|\n>", t, flags=re.S)[0]
+            t = re.split(r"\n--\s*\n|\nKyle Rasmussen\nCo-Founder", t)[0]
+            t = re.sub(r"<https?://[^>]+>", "", t).strip()
+            msgs.append({"side": "them" if x.get("ue_type") == 2 else "us", "from": x.get("from_address_email"),
+                         "date": (x.get("timestamp_email") or "")[:10], "subject": x.get("subject"), "body": t})
+        print(json.dumps({"workspace": ws, "campaign": em[0].get("campaign_id") if em else None, "messages": msgs}, indent=1))
+        return
+    print(json.dumps({"workspace": None, "messages": []}))
+
+
 ap = argparse.ArgumentParser()
 sp = ap.add_subparsers(dest="cmd", required=True)
 r = sp.add_parser("rank")
@@ -144,5 +174,7 @@ e = sp.add_parser("example")
 e.add_argument("--ws", required=True)
 e.add_argument("--tool", choices=["instantly", "emailbison"], required=True)
 e.add_argument("--campaign", required=True)
+t = sp.add_parser("thread")
+t.add_argument("--email", required=True)
 args = ap.parse_args()
-{"rank": rank, "example": example}[args.cmd](args)
+{"rank": rank, "example": example, "thread": thread}[args.cmd](args)
