@@ -12,11 +12,11 @@ This repo is a Claude Code **plugin**, not a loose folder of markdown:
 .claude-plugin/plugin.json       # plugin manifest (name: cold-outbound-skills)
 .claude-plugin/marketplace.json  # single-plugin marketplace, source "./"
 .claude/settings.json            # auto-registers the marketplace + enables the plugin
-skills/<skill-name>/SKILL.md     # the 50 skills, all one level deep
+skills/<skill-name>/SKILL.md     # the 51 skills, all one level deep
 ```
 
 Opening this repo in Claude Code registers the marketplace and enables the plugin, so all
-50 skills are invocable as `/<skill-name>`. To use them from *other* projects:
+51 skills are invocable as `/<skill-name>`. To use them from *other* projects:
 
 ```bash
 claude plugin marketplace add krasmussen1994/coldoutboundskill
@@ -31,7 +31,7 @@ claude plugin install cold-outbound-skills@coldoutboundskill
 - Every skill needs YAML frontmatter with `name` (matching its directory) and `description`.
 - The `description` is the only thing loaded into every session — write it as trigger text
   ("use when the user says X"), not as a summary.
-- Adding a skill costs ~150 always-on tokens in every session. The 50 skills currently cost
+- Adding a skill costs ~150 always-on tokens in every session. The 51 skills currently cost
   ~8.1k. Run `claude plugin details cold-outbound-skills` to re-measure.
 - Validate before committing: `claude plugin validate .` and `claude plugin validate skills`.
 
