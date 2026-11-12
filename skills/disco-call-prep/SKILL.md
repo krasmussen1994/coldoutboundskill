@@ -17,7 +17,15 @@ Google Calendar, today and tomorrow before noon (America/Chicago). A new-busines
 
 - Clay `search-companies` with `where domain = "<domain>"`: size, industry, location, description. Free; never run enrichment.
 - The calendar description and any Calendly / Gmail thread for their title and what they asked about.
+- Pin down WHICH product the contact owns. The Calendly "Company Name" and job title, and the product we pitched in the booking thread (step 2b), often name a division (BackdPayments, not Backd's lending side). Web-search that product's own pages: who it is for, eligibility, pricing model. Size the market for that product, not the parent company.
 - Decide who THEY sell to (their buyer, not them): department, seniority, company size, industry. That is what the calculator models.
+
+## 2a. Size the market (step 2 of the page). Research it, never guess it.
+
+1. **Companies in their ICP (`tam`).** Count with Clarify `find-leads` on `tam_company`: their buyer's industries (pick every matching value from the schema's industry list), `primary_location->>'country' = 'United States'` unless they sell elsewhere, and the employee bands that fit. Run one query per band group (e.g. 11-50, then 51-250 + 251-1K) so you can report the split. The result line "Created draft search ... with N companies" is the count. Label each search "<Company> TAM sizing: ... (analysis)". Drop bands the product does not serve (say why). If an adjacent segment is plausible but uncertain (manufacturers next to distributors), count it too and report it as the "wider market" option, not the default. Clay `search-companies` returns no totals, so do not use it to count.
+2. **Decision makers per company (`cpc`).** Take about 10 real companies from the Clarify preview, mixed across the size bands, and run Clay `search-contacts` on them (free, up to 10 domains per call) for the titles that would own this purchase: owner / president / CEO plus the functional buyer (CFO, controller, VP Sales, credit manager, CIO, VP Product, whatever fits). Count findable decision makers per company by band, then weight by the band split from step 1. Round to the nearest 0.5. Note obviously mis-tagged companies in the sample; they tell you how noisy the count is.
+3. **Deal value (`deal`) and close rate (`win`).** Derive from their pricing model when public (fee × typical volume, ACV ranges, review sites). Otherwise state the assumption and its logic in one line. Close rate defaults to 15-20% unless they say otherwise.
+4. **Write it down.** The preset `note` and the email's "Why these numbers" section must state: what the product is and who buys it, each count with its source and band split, the decision-maker sample result, and which inputs are still guesses. Keep the wider-market number in the email so Kyle can switch to it live.
 
 ## 2b. Find the thread that booked the call
 
@@ -44,10 +52,10 @@ Never name the client in anything prospect-facing: use its `d` description.
 ArtifactData `set` on `https://claude.ai/artifact/X4BAkr62irNyypZ3nYcHkJ`, collection `presets`, doc_id `<slug>` (read it first; pass `if_version` if it exists):
 
 ```json
-{"name": "Backd", "persona": "own", "sen": "own", "size": "s2", "ind": "any",
- "client": "Creative agency", "tam": 50000, "cpc": 1, "win": 15, "deal": 6000,
+{"name": "Backd", "persona": "own", "sen": ["own","c"], "size": ["s2","s3","s4"], "ind": "any",
+ "client": "Creative agency", "tam": 13100, "cpc": 1.5, "win": 15, "deal": 10000,
  "call": "<event start ISO>", "contact": "<name, title>",
- "note": "<one sentence on why these plays>",
+ "note": "<what the product is and who buys it; market count with source and band split; decision makers per company and how you measured it; which inputs are guesses; why these plays>",
  "booked": {"title": "<subject>: the thread that booked this call", "note": "<campaign and its reply rate>",
             "messages": [{"who": "Kyle (IntentSignal)", "side": "us", "date": "2026-10-19", "subject": "...", "body": "..."},
                          {"who": "<Name> (<Company>)", "side": "them", "date": "...", "body": "..."}]},
@@ -56,7 +64,7 @@ ArtifactData `set` on `https://claude.ai/artifact/X4BAkr62irNyypZ3nYcHkJ`, colle
 
 - `sen`, `size` and `ind` each take one key or an array of keys (several = an equal mix, e.g. `"sen": ["vp","c"]`). `sen`: any | own | c | vp | dir. `size`: any | s1 (1-10) | s2 (11-50) | s3 (51-200) | s4 (201-1,000) | s5 (1,001-5,000) | s6 (5,001-10,000) | s7 (10,000+). `ind`: any | sw | ret | hc | con | ps | mfg | fin | hosp | ag | edu.
 - `client` is optional: a `d` description from plays.json to use as the IntentSignal benchmark instead of the persona median. Use it when one play is clearly closer than the persona average.
-- `tam` = companies in their ICP, `cpc` = decision makers per company, `win` = meeting-to-deal %, `deal` = first-year deal value. These are starting guesses: base them on the company's size, price point and market, and say in the email that they are guesses. There is no meeting goal: the page works out the meeting ceiling from the market.
+- `tam` = companies in their ICP and `cpc` = decision makers per company, both from step 2a (`cpc` may be a decimal such as 1.5). `win` = meeting-to-deal %, `deal` = first-year deal value. There is no meeting goal: the page works out the meeting ceiling from the market.
 
 ## 5. Email Kyle
 
@@ -64,6 +72,7 @@ Gmail `send_message` to kyle@intentsignal.co only. Subject `Call prep: <Company>
 
 1. Two lines on the company and the person, then **How this call got booked**: the thread (first email, bump, their reply) and what made them say yes.
 2. The prefilled link `https://claude.ai/artifact/X4BAkr62irNyypZ3nYcHkJ#<slug>` and the settings it loads.
+2b. **Why these numbers**: the step 2a findings in four or five lines (product and buyer, company count by band with source, wider-market count, decision makers per company from the sample, which inputs are guesses).
 3. What the calculator shows: industry vs IntentSignal people per positive reply, the meeting ceiling (industry average vs our approach), the test package and the package that reaches the ceiling, and the weakest assumption.
 4. The two plays: buyer, people per positive reply (people emailed, positives), and the real email in a blockquote.
 5. Four questions to confirm on the call.
